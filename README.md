@@ -4,6 +4,9 @@ Submission of team **El Chato** to *More Than A Hack 2027* (match BAR–ATH). Fo
 Nausicaa says which team has the ball (`H` home, `A` away), whether the ball is dead (`D`), or `X` outside the halves.
 It reads **only the ATD tracking**.
 
+The name comes from Book VI of Homer's *Odyssey*: Nausicaa plays ball with her companions on the beach (the oldest
+ball game in Western literature) until a stray throw sends the ball into the water, which is when the story moves on.
+
 **Start with the technical document:** [`TECHNICAL_DOCUMENT.md`](TECHNICAL_DOCUMENT.md) (PDF: [`TECHNICAL_DOCUMENT.pdf`](TECHNICAL_DOCUMENT.pdf)).
 
 ## Reproduce the submission file
@@ -38,10 +41,9 @@ Windows: `.venv\Scripts\pip ...` and `.venv\Scripts\python ...`.
 | `requirements.lock` | Pinned dependencies of inference |
 | `base/` | Shared code used at inference: data loading (`games.py`, `bench/adapter.py`), features (`bench/features.py`), TCN (`models/tcn_v7.py`), rules (`starter/`, `bench/tune_decoder.py`), decoder (`models/decoder.py`). Its constants for the training workstation are not used at inference |
 | `training/` | Training and evaluation of the stack (nested protocol) and changes made to the TCN training script (`base_patches/`); `training/README.md` maps every number of the document to its script |
-| `dataset/` | Degradation of the external matches so they resemble the provided tracking, and its label-free validation (`REPORT_DATASET.md`, in Spanish) |
+| `dataset/` | Degradation of the external matches so they resemble the provided tracking, and its label-free validation (`adv_ds.py`, `calib8.py`, `probes.py`) |
 | `results/` | Benchmark results (JSON, external matches only) |
 | `fig/` | Figures of the technical document and the scripts that draw them and build the PDF |
-| `docs/` | Development notes written during the challenge (Spanish): experiment log `REPORT.md`, architecture, process |
 
 Training is published as code: it ran on the team's workstation, with the external data in `MTAH_SHARED` and
 `MTAH_LOCAL`, and it is not bit-reproducible across machines. Inference is.

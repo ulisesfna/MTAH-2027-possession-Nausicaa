@@ -2,8 +2,10 @@
 
 **Team El Chato** · match BAR–ATH · model **Nausicaa** · input: ATD tracking only
 
-*Nausicaa is named after the princess of Homer's* Odyssey *(Book VI) whose ball game on the beach is the oldest
-ball game in Western literature; the ball is lost into the water, and that is how the story moves on.*
+**Why "Nausicaa".** In Book VI of Homer's *Odyssey*, the princess Nausicaa plays ball with her companions on the
+beach, the oldest ball game described in Western literature. A stray throw sends the ball into the water, and the
+shout wakes Odysseus. A model that decides, frame by frame, who has the ball and when it is lost seemed to deserve
+her name.
 
 | <span class="big">0.761</span><br>Spell-F1 on 10 external matches (our best model without stacking: 0.701) | <span class="big">10 / 10</span><br>External matches improved over that model | <span class="big">ATD only</span><br>No video, no events, no labels of the match | <span class="big">Byte-exact</span><br>Same CSV on Linux ARM and Windows x86 |
 |---|---|---|---|

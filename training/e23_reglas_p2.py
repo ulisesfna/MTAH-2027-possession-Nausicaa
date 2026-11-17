@@ -1,5 +1,4 @@
-"""E23: reglas sin el retiming "a mitad del vuelo" (p2_notag = p3_notag con retime=None), que el equipo sacó de la ventana
-pública. Recalcula las etiquetas de las reglas (janv1, clar) de las entradas del decodificador de un banco y las escribe en
+"""E23: reglas p2_notag (= p3_notag con retime=None). Recalcula las etiquetas de las reglas (janv1, clar) de las entradas del decodificador de un banco y las escribe en
 otro directorio de entradas (el resto de campos se copia igual). El retiming solo cambia las etiquetas al final de
 principled_v1.predict, así que phys_conf, r, period y las etiquetas externas no cambian.
     python e23_reglas_p2.py <dir entrades origen> <dir entrades destino> <dir banco (npz degradados)>   (venv bench)"""

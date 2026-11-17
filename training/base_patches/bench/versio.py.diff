@@ -1,0 +1,15 @@
+--- base/bench/versio.py	2026-11-17 09:15:37.394351276 +0000
++++ training/base_patches/bench/versio.py	2026-11-16 21:48:06.157269077 +0000
+@@ -7,7 +7,10 @@
+ import os
+ 
+ DEG = os.environ.get("MTAH_DEG", "v2")
++# Bancos propios (Ulises: v8, v9, v10, v10j...): cualquier MTAH_DEG que no sea v1-v3 vive entero en ~/mtah_data, nada en /workspace/shared
++PROPI = DEG not in ("v1", "v2", "v3")
++LOCAL = os.path.expanduser(f"~/mtah_data/{DEG}")
+ DADES = {"v1": "/workspace/shared/bench_v7_deg", "v2": "/workspace/shared/bench_v7b_deg",
+-         "v3": "/workspace/shared/bench_v7d_deg"}[DEG]
++         "v3": "/workspace/shared/bench_v7d_deg"}.get(DEG, os.path.expanduser(f"~/mtah_data/bench_{DEG}"))
+ FEATS = {"v1": "/workspace/shared/features_v7", "v2": "/workspace/shared/features_v7b",
+-         "v3": "/workspace/shared/features_v7d"}[DEG]
++         "v3": "/workspace/shared/features_v7d"}.get(DEG, LOCAL + "/features")

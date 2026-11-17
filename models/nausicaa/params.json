@@ -1,0 +1,58 @@
+{
+ "banco": "v12t10p2",
+ "origen": "Nausicaa (E23): TCN v10 symmetric + stack trained on bench v12t10p2 (dead ball moving, rules janv1 p2_notag without the mid-flight retiming, 6 seeds); decoder cfg from the all-matches fold of results_v12t10p2_sim_s012/stack_t2_g3.json",
+ "cfg": {
+  "a": 0.35,
+  "b": 0.0,
+  "s": 0.25,
+  "d": 0.0
+ },
+ "st": {
+  "p5": [
+   35.0,
+   35.599999999999994,
+   113.0
+  ],
+  "mitjana": [
+   334.1544440689422,
+   310.6689746125948,
+   489.20422055820285
+  ],
+  "n_trams": [
+   2959,
+   3033,
+   1469
+  ],
+  "transicions": [
+   [
+    0.0,
+    1817.0,
+    1251.0
+   ],
+   [
+    1856.0,
+    0.0,
+    1278.0
+   ],
+   [
+    1153.0,
+    1264.0,
+    0.0
+   ]
+  ],
+  "prior": [
+   0.3256822014458458,
+   0.30921986081577907,
+   0.3650979377383752
+  ]
+ },
+ "grupos": [
+  "tcn",
+  "jv",
+  "raw",
+  "touch"
+ ],
+ "tcn_simetrica": true,
+ "tcn": "tcn_v12t10p2_weights.pt",
+ "reglas": "janv1 p2_notag"
+}

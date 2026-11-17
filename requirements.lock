@@ -1,0 +1,7 @@
+# Entorno de inferencia de predict.py (Python 3.12, CPU). Instalar con:
+#   pip install --extra-index-url https://download.pytorch.org/whl/cpu -r requirements.lock
+torch==2.15.0
+numpy==2.5.4
+lightgbm==4.7.0
+scipy==1.18.1
+PyYAML==6.0.3

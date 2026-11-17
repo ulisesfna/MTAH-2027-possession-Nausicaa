@@ -1,0 +1,11 @@
+--- base/bench/tune_decoder.py	2026-11-17 09:15:37.422351423 +0000
++++ training/base_patches/bench/tune_decoder.py	2026-11-16 21:48:06.234454163 +0000
+@@ -33,7 +33,7 @@
+ DADES = versio.DADES
+ FEATS = versio.FEATS
+ SORTIDA = {"v1": "/workspace/shared/decoder_v7", "v2": "/workspace/shared/decoder_v7b",
+-           "v3": "/workspace/shared/decoder_v7d"}[versio.DEG]
++           "v3": "/workspace/shared/decoder_v7d"}.get(versio.DEG, versio.LOCAL + "/decoder")
+ LLAVORS = (0, 1, 2)
+ ENTRENAMENT = ("idsse", "skillcorner")
+ 

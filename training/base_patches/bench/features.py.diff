@@ -1,0 +1,11 @@
+--- base/bench/features.py	2026-11-17 09:15:37.404351328 +0000
++++ training/base_patches/bench/features.py	2026-11-16 14:24:51.544575980 +0000
+@@ -30,7 +30,7 @@
+ INICI_PART_S = 10  # segons des del xut inicial de cada part per decidir la direcció d'atac
+ DADES = versio.DADES
+ SORTIDA_EXT = versio.FEATS
+-SORTIDA_PARTIT = "/workspace/shared/features_match"
++SORTIDA_PARTIT = versio.LOCAL + "/features_match" if versio.PROPI else "/workspace/shared/features_match"
+ EQUIPS = (("loc", 0), ("vis", 1))
+ 
+ # indicador que diu quan és vàlida cada característica (per a les estadístiques condicionades)

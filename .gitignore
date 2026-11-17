@@ -1,0 +1,12 @@
+# match data and anything derived from it: never in this repository
+data/
+*.mp4
+*.npz
+*.npy
+# outputs and environments
+out/
+submission.csv
+*.sha256
+.venv*/
+__pycache__/
+*.so

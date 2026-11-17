@@ -1,0 +1,79 @@
+--- base/bench/train_tcn.py	2026-11-17 09:15:37.412351370 +0000
++++ training/base_patches/bench/train_tcn.py	2026-11-16 21:48:38.247912538 +0000
+@@ -38,14 +38,18 @@
+ from models import tcn_v7  # noqa: E402
+ 
+ ENTRENAMENT = ("idsse", "skillcorner")
+-LLAVORS = (0, 1, 2)
++LLAVORS = tuple(int(x) for x in os.environ.get("TCN_LLAVORS", "0,1,2").split(","))   # v10: 0-2 = degradación v8.2, 3-5 = degradación de Jan
++PLECS_SC = int(os.environ.get("TCN_PLECS_SC", "0"))   # v10: nº de pliegues extra que dejan fuera SkillCorner (probabilidades fuera de pliegue para el stack)
+ ETIQUETA = "label_acc"
+ 
+ # variants: v7 (C2, degradació v1, 32 característiques), v7b (C2b, degradació v2, 35), v7c (com la
+ # v7b, amb 14 èpoques com a màxim; descartada) i v7d (C2c: com la v7b, amb la degradació v3). Es tria amb MTAH_TCN; la degradació, amb MTAH_DEG (versio.py).
+ VARIANTS = {"v7": {"deg": "v1", "epoques_max": 7}, "v7b": {"deg": "v2", "epoques_max": 7},
+-            "v7c": {"deg": "v2", "epoques_max": 14}, "v7d": {"deg": "v3", "epoques_max": 7}}
++            "v7c": {"deg": "v2", "epoques_max": 14}, "v7d": {"deg": "v3", "epoques_max": 7},
++            "v8": {"deg": "v8", "epoques_max": 7}, "v9": {"deg": "v9", "epoques_max": 7}}
+ VARIANT = os.environ.get("MTAH_TCN", "v7b")
++if VARIANT not in VARIANTS:      # variantes propias (v10...): degradación del mismo nombre
++    VARIANTS[VARIANT] = {"deg": VARIANT, "epoques_max": 7}
+ 
+ 
+ def rutes(v=None):
+@@ -53,6 +57,10 @@
+     la de la variant (p. ex. la v7 sobre la v2), van a un directori a part."""
+     import versio
+     v = v or VARIANT
++    if v not in ("v7", "v7b", "v7c", "v7d"):   # variantes propias: todo en local
++        loc = os.path.expanduser(f"~/mtah_data/{v}")
++        return {"models": loc + "/tcn_models", "probs": loc + "/tcn_probs", "pesos": loc + f"/tcn_{v}_weights.pt",
++                "partit": loc + f"/features_match/tcn_{v}_probs.npz"}
+     probs = f"/workspace/shared/tcn_{v}_probs"
+     if versio.DEG != VARIANTS[v]["deg"]:
+         probs += f"_deg{versio.DEG[1:]}"
+@@ -227,6 +235,9 @@
+         out.append((f"idsse_{p}", [("idsse", p)], ent, val))
+     val = ("idsse", ids[0])
+     out.append(("metrica", [("metrica", p) for p in partits("metrica")], [k for k in tots if k != val], val))
++    for j in range(PLECS_SC):   # v10: SkillCorner fuera de pliegue (cada partido en un pliegue; entrena con los 7 IDSSE y el resto de SkillCorner)
++        fora = [("skillcorner", p) for p in sc[j::PLECS_SC]]
++        out.append((f"sc_{j}", fora, [k for k in tots if k not in fora and k != val], val))
+     return out
+ 
+ 
+@@ -296,9 +307,25 @@
+     return hashlib.sha256(np.ascontiguousarray(a).tobytes()).hexdigest()
+ 
+ 
++def probs_extern_sim(ck_path, font, partit, llavor):
++    """Promedio simétrico (E17): media de la predicción directa y de la predicción con los equipos intercambiados
++    (misma permutación y giro que la aumentación del entrenamiento), deshaciendo el intercambio en la salida."""
++    model, ck = tcn_v7.carrega(ck_path)
++    d = carrega(font, partit, llavor)
++    idx, sg = permutacio_intercanvi(d["noms"])
++    pa = tcn_v7.probabilitats(model, ck, d["X"])
++    pb = tcn_v7.probabilitats(model, ck, np.ascontiguousarray(d["X"][:, idx] * sg))[:, [1, 0, 2]]
++    return ((pa + pb) / 2).astype(np.float32)
++
++
+ def desa_probs(nom, avaluats, dins):
+     for font, partit in avaluats:
+         for ll in LLAVORS:
++            if os.environ.get("TCN_SIM", "0") == "1":
++                ps = probs_extern_sim(ruta_plec(nom), font, partit, ll)
++                desa_npz(os.path.join(SORTIDA_PROBS + "_sim", font, f"{partit}_s{ll}.npz"),
++                         {"probs": ps, "classes": np.array(tcn_v7.CLASSES),
++                          "meta": np.array(json.dumps({"plec": nom, "fora_de_plec": not dins, "simetric": True, "sha256": sha(ps)}, sort_keys=True))})
+             p = probs_extern(ruta_plec(nom), font, partit, ll)
+             desa_npz(os.path.join(SORTIDA_PROBS, font, f"{partit}_s{ll}.npz"),
+                      {"probs": p, "classes": np.array(tcn_v7.CLASSES),
+@@ -355,7 +382,7 @@
+             desa(ck, path)
+         ck = torch.load(path, map_location="cpu", weights_only=False)
+         desa_probs(nom, av, dins=False)
+-        if nom == "metrica":  # SkillCorner és dins de l'entrenament: només informatiu
++        if nom == "metrica" and not PLECS_SC:  # SkillCorner és dins de l'entrenament: només informatiu
+             desa_probs(nom, [("skillcorner", p) for p in partits("skillcorner")], dins=True)
+         resum[nom] = {"epoca_millor": ck["epoca_millor"], "epoques_fetes": len(ck["historial"]), "segons": ck.get("segons")}
+         print(nom, json.dumps(resum[nom]), flush=True)
